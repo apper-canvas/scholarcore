@@ -30,10 +30,10 @@ const AttendancePage = ({ onMobileMenuToggle }) => {
   }, [selectedDate, selectedClassId]);
 
   const loadClasses = async () => {
-    try {
+try {
       setLoading(true);
       const classesData = await classService.getAll();
-      setClasses(classesData.filter(cls => cls.status === 'Active'));
+      setClasses(classesData.filter(cls => cls.status_c === 'Active'));
     } catch (error) {
       toast.error('Failed to load classes');
     } finally {
@@ -56,9 +56,10 @@ const AttendancePage = ({ onMobileMenuToggle }) => {
         return;
       }
 
+      const enrolledIds = selectedClass.enrolledStudents_c ? selectedClass.enrolledStudents_c.split(',').map(id => parseInt(id.trim())) : [];
       const enrolledStudentsList = allStudents.filter(student => 
-        selectedClass.enrolledStudents.includes(student.Id) && 
-        student.enrollmentStatus === 'Active'
+        enrolledIds.includes(student.Id) && 
+        student.enrollmentStatus_c === 'Active'
       );
 
       setStudents(allStudents);
@@ -73,8 +74,8 @@ const AttendancePage = ({ onMobileMenuToggle }) => {
       // Initialize attendance state
       const attendanceState = {};
       enrolledStudentsList.forEach(student => {
-        const existing = existingAttendance.find(record => record.studentId === student.Id);
-        attendanceState[student.Id] = existing ? existing.status : 'Present';
+        const existing = existingAttendance.find(record => record.studentId_c === student.Id);
+        attendanceState[student.Id] = existing ? existing.status_c : 'Present';
       });
 
       setAttendance(attendanceState);
@@ -110,7 +111,7 @@ const AttendancePage = ({ onMobileMenuToggle }) => {
     toast.success('Attendance reset to default');
   };
 
-  const handleSaveAttendance = async () => {
+const handleSaveAttendance = async () => {
     if (!selectedDate || !selectedClassId || enrolledStudents.length === 0) {
       toast.error('Please select a date and class with enrolled students');
       return;
@@ -120,11 +121,11 @@ const AttendancePage = ({ onMobileMenuToggle }) => {
       setSaving(true);
       
       const attendanceRecords = enrolledStudents.map(student => ({
-        studentId: student.Id,
-        classId: parseInt(selectedClassId),
-        date: selectedDate,
-        status: attendance[student.Id] || 'Present',
-        timestamp: new Date().toISOString()
+        studentId_c: student.Id,
+        classId_c: parseInt(selectedClassId),
+        date_c: selectedDate,
+        status_c: attendance[student.Id] || 'Present',
+        timestamp_c: new Date().toISOString()
       }));
 
       await attendanceService.saveAttendance(attendanceRecords);
@@ -198,10 +199,10 @@ const AttendancePage = ({ onMobileMenuToggle }) => {
               className="w-full"
             >
               <option value="">Choose a class...</option>
-              {classes.map(cls => (
-                <option key={cls.Id} value={cls.Id}>
-                  {cls.courseName} - {cls.instructor}
-                </option>
+{classes.map(cls => (
+                 <option key={cls.Id} value={cls.Id}>
+                   {cls.courseName_c} - {cls.instructor_c}
+                 </option>
               ))}
             </Select>
           </div>
@@ -305,28 +306,28 @@ const AttendancePage = ({ onMobileMenuToggle }) => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {enrolledStudents.map(student => (
-                      <tr key={student.Id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 h-10 w-10">
-                              <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                <ApperIcon name="User" size={16} className="text-gray-500" />
-                              </div>
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">
-                                {student.firstName} {student.lastName}
-                              </div>
-                              <div className="text-sm text-gray-500">
-                                {student.email}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {student.studentId}
-                        </td>
+{enrolledStudents.map(student => (
+                       <tr key={student.Id} className="hover:bg-gray-50">
+                         <td className="px-6 py-4 whitespace-nowrap">
+                           <div className="flex items-center">
+                             <div className="flex-shrink-0 h-10 w-10">
+                               <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                 <ApperIcon name="User" size={16} className="text-gray-500" />
+                               </div>
+                             </div>
+                             <div className="ml-4">
+                               <div className="text-sm font-medium text-gray-900">
+                                 {student.firstName_c} {student.lastName_c}
+                               </div>
+                               <div className="text-sm text-gray-500">
+                                 {student.email_c}
+                               </div>
+                             </div>
+                           </div>
+                         </td>
+                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                           {student.studentId_c}
+                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           Grade {student.gradeLevel}
                         </td>

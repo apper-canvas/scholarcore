@@ -92,18 +92,18 @@ const GradesPage = ({ onMobileMenuToggle }) => {
     setShowAssignmentModal(true);
   };
 
-  const handleSaveAssignment = async (assignmentData) => {
+const handleSaveAssignment = async (assignmentData) => {
     try {
       if (editingAssignment) {
         await assignmentService.update(editingAssignment.Id, {
           ...assignmentData,
-          classId: selectedClass.Id
+          classId_c: selectedClass.Id
         });
         toast.success('Assignment updated successfully');
       } else {
         await assignmentService.create({
           ...assignmentData,
-          classId: selectedClass.Id
+          classId_c: selectedClass.Id
         });
         toast.success('Assignment created successfully');
       }
@@ -134,21 +134,21 @@ const GradesPage = ({ onMobileMenuToggle }) => {
   const handleGradeChange = async (studentId, assignmentId, score) => {
     try {
       const assignment = assignments.find(a => a.Id === assignmentId);
-      const percentage = assignment ? Math.round((score / assignment.pointsPossible) * 100) : 0;
+      const percentage = assignment ? Math.round((score / assignment.pointsPossible_c) * 100) : 0;
       
       const existingGrade = grades.find(g => 
-        g.studentId === studentId && g.assignmentId === assignmentId
+        g.studentId_c === studentId && g.assignmentId_c === assignmentId
       );
 
       if (existingGrade) {
-        await gradeService.update(existingGrade.Id, { score, percentage });
+        await gradeService.update(existingGrade.Id, { score_c: score, percentage_c: percentage });
       } else {
         await gradeService.create({
-          studentId,
-          assignmentId,
-          classId: selectedClass.Id,
-          score,
-          percentage
+          studentId_c: studentId,
+          assignmentId_c: assignmentId,
+          classId_c: selectedClass.Id,
+          score_c: score,
+          percentage_c: percentage
         });
       }
 
@@ -157,24 +157,23 @@ const GradesPage = ({ onMobileMenuToggle }) => {
       toast.error('Failed to save grade');
     }
   };
-
   const getStudentGrade = (studentId, assignmentId) => {
-    return grades.find(g => g.studentId === studentId && g.assignmentId === assignmentId);
+return grades.find(g => g.studentId_c === studentId && g.assignmentId_c === assignmentId);
   };
 
   const getAssignmentAverage = (assignmentId) => {
-    const assignmentGrades = grades.filter(g => g.assignmentId === assignmentId);
+    const assignmentGrades = grades.filter(g => g.assignmentId_c === assignmentId);
     if (assignmentGrades.length === 0) return 0;
     
-    const sum = assignmentGrades.reduce((acc, grade) => acc + grade.percentage, 0);
+    const sum = assignmentGrades.reduce((acc, grade) => acc + grade.percentage_c, 0);
     return Math.round(sum / assignmentGrades.length);
   };
 
   const getStudentAverage = (studentId) => {
-    const studentGrades = grades.filter(g => g.studentId === studentId);
+    const studentGrades = grades.filter(g => g.studentId_c === studentId);
     if (studentGrades.length === 0) return 0;
     
-    const sum = studentGrades.reduce((acc, grade) => acc + grade.percentage, 0);
+    const sum = studentGrades.reduce((acc, grade) => acc + grade.percentage_c, 0);
     return Math.round(sum / studentGrades.length);
   };
 
@@ -205,10 +204,10 @@ const GradesPage = ({ onMobileMenuToggle }) => {
                 >
                   <option value="">Select a class</option>
                   {classes.map(classItem => (
-                    <option key={classItem.Id} value={classItem.Id}>
-                      {classItem.subject} - {classItem.className} ({classItem.gradeLevel})
-                    </option>
-                  ))}
+<option key={classItem.Id} value={classItem.Id}>
+                       {classItem.subject_c} - {classItem.courseName_c} ({classItem.gradeLevel_c})
+                     </option>
+                   ))}
                 </Select>
               </div>
               {selectedClass && (
@@ -250,43 +249,43 @@ const GradesPage = ({ onMobileMenuToggle }) => {
                   <thead className="bg-gray-50 border-b border-gray-200">
                     <tr>
                       <th className="sticky left-0 bg-gray-50 px-6 py-4 text-left text-sm font-semibold text-gray-900 border-r border-gray-200 min-w-[200px]">
-                        Student
-                      </th>
-                      {assignments.map(assignment => (
-                        <th key={assignment.Id} className="px-4 py-4 text-center text-sm border-r border-gray-200 min-w-[120px]">
-                          <div className="space-y-1">
-                            <div className="flex items-center justify-center gap-2">
-                              <span className="font-semibold text-gray-900">{assignment.name}</span>
-                              <div className="flex items-center gap-1">
-                                <button
-                                  onClick={() => handleEditAssignment(assignment)}
-                                  className="text-gray-400 hover:text-primary-600 transition-colors"
-                                >
-                                  <ApperIcon name="Edit2" size={14} />
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteAssignment(assignment.Id)}
-                                  className="text-gray-400 hover:text-red-600 transition-colors"
-                                >
-                                  <ApperIcon name="Trash2" size={14} />
-                                </button>
-                              </div>
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              {assignment.pointsPossible} pts
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              Due: {new Date(assignment.dueDate).toLocaleDateString()}
-                            </div>
-                            <div className="text-xs font-medium text-primary-600">
-                              Avg: {getAssignmentAverage(assignment.Id)}%
-                            </div>
-                          </div>
-                        </th>
-                      ))}
-                      <th className="px-4 py-4 text-center text-sm font-semibold text-gray-900 min-w-[100px]">
-                        Average
-                      </th>
+Student
+                       </th>
+                       {assignments.map(assignment => (
+                         <th key={assignment.Id} className="px-4 py-4 text-center text-sm border-r border-gray-200 min-w-[120px]">
+                           <div className="space-y-1">
+                             <div className="flex items-center justify-center gap-2">
+                               <span className="font-semibold text-gray-900">{assignment.Name}</span>
+                               <div className="flex items-center gap-1">
+                                 <button
+                                   onClick={() => handleEditAssignment(assignment)}
+                                   className="text-gray-400 hover:text-primary-600 transition-colors"
+                                 >
+                                   <ApperIcon name="Edit2" size={14} />
+                                 </button>
+                                 <button
+                                   onClick={() => handleDeleteAssignment(assignment.Id)}
+                                   className="text-gray-400 hover:text-red-600 transition-colors"
+                                 >
+                                   <ApperIcon name="Trash2" size={14} />
+                                 </button>
+                               </div>
+                             </div>
+                             <div className="text-xs text-gray-500">
+                               {assignment.pointsPossible_c} pts
+                             </div>
+                             <div className="text-xs text-gray-500">
+                               Due: {new Date(assignment.dueDate_c).toLocaleDateString()}
+                             </div>
+                             <div className="text-xs font-medium text-primary-600">
+                               Avg: {getAssignmentAverage(assignment.Id)}%
+                             </div>
+                           </div>
+                         </th>
+                       ))}
+                       <th className="px-4 py-4 text-center text-sm font-semibold text-gray-900 min-w-[100px]">
+                         Average
+                       </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
@@ -305,15 +304,15 @@ const GradesPage = ({ onMobileMenuToggle }) => {
                           >
                             <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
                               <span className="text-sm font-medium text-primary-700">
-                                {student.firstName[0]}{student.lastName[0]}
-                              </span>
-                            </div>
-                            <div>
-                              <div className="font-medium text-gray-900 group-hover:text-primary-600">
-                                {student.firstName} {student.lastName}
-                              </div>
-                              <div className="text-sm text-gray-500">{student.studentId}</div>
-                            </div>
+{student.firstName_c?.[0]}{student.lastName_c?.[0]}
+                               </span>
+                             </div>
+                             <div>
+                               <div className="font-medium text-gray-900 group-hover:text-primary-600">
+                                 {student.firstName_c} {student.lastName_c}
+                               </div>
+                               <div className="text-sm text-gray-500">{student.studentId_c}</div>
+                             </div>
                             <ApperIcon name="ExternalLink" size={14} className="text-gray-400 group-hover:text-primary-600" />
                           </button>
                         </td>

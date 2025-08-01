@@ -29,7 +29,7 @@ const StudentsPage = ({ onMobileMenuToggle }) => {
     filterStudents();
   }, [students, searchQuery]);
 
-  const loadStudents = async () => {
+const loadStudents = async () => {
     try {
       setLoading(true);
       setError("");
@@ -48,13 +48,12 @@ const StudentsPage = ({ onMobileMenuToggle }) => {
       setFilteredStudents(students);
       return;
     }
-
-    const query = searchQuery.toLowerCase();
+const query = searchQuery.toLowerCase();
     const filtered = students.filter(student =>
-      student.firstName.toLowerCase().includes(query) ||
-      student.lastName.toLowerCase().includes(query) ||
-      student.studentId.toLowerCase().includes(query) ||
-      student.email.toLowerCase().includes(query)
+      student.firstName_c?.toLowerCase().includes(query) ||
+      student.lastName_c?.toLowerCase().includes(query) ||
+      student.studentId_c?.toLowerCase().includes(query) ||
+      student.email_c?.toLowerCase().includes(query)
     );
     setFilteredStudents(filtered);
   };
@@ -98,10 +97,10 @@ const StudentsPage = ({ onMobileMenuToggle }) => {
     }
   };
 
-  const getStatistics = () => {
-    const activeStudents = students.filter(s => s.enrollmentStatus === "Active").length;
+const getStatistics = () => {
+    const activeStudents = students.filter(s => s.enrollmentStatus_c === "Active").length;
     const gradeDistribution = students.reduce((acc, student) => {
-      acc[student.gradeLevel] = (acc[student.gradeLevel] || 0) + 1;
+      acc[student.gradeLevel_c] = (acc[student.gradeLevel_c] || 0) + 1;
       return acc;
     }, {});
     

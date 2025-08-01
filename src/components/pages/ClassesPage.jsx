@@ -65,12 +65,13 @@ const ClassesPage = ({ onMobileMenuToggle, onClassCountChange }) => {
     }
   };
 
-  const loadEnrolledStudents = async (classId) => {
+const loadEnrolledStudents = async (classId) => {
     try {
       const classData = await classService.getById(classId);
-      if (classData && classData.enrolledStudents) {
+      if (classData && classData.enrolledStudents_c) {
+        const enrolledIds = classData.enrolledStudents_c.split(',').map(id => parseInt(id.trim()));
         const enrolled = students.filter(student => 
-          classData.enrolledStudents.includes(student.Id)
+          enrolledIds.includes(student.Id)
         );
         setEnrolledStudents(enrolled);
       }
@@ -109,12 +110,12 @@ const ClassesPage = ({ onMobileMenuToggle, onClassCountChange }) => {
     }
   };
 
-  const filteredClasses = classes.filter(classItem => {
-    const matchesSearch = classItem.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         classItem.instructor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         classItem.courseCode.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesGrade = !filterGrade || classItem.gradeLevel === filterGrade;
-    const matchesSubject = !filterSubject || classItem.subject === filterSubject;
+const filteredClasses = classes.filter(classItem => {
+    const matchesSearch = classItem.courseName_c?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         classItem.instructor_c?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         classItem.courseCode_c?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesGrade = !filterGrade || classItem.gradeLevel_c === filterGrade;
+    const matchesSubject = !filterSubject || classItem.subject_c === filterSubject;
     
     return matchesSearch && matchesGrade && matchesSubject;
   });
@@ -215,29 +216,29 @@ const ClassesPage = ({ onMobileMenuToggle, onClassCountChange }) => {
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
-                            <h3 className="font-medium text-gray-900">{classItem.courseName}</h3>
-                            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                              {classItem.courseCode}
-                            </span>
-                          </div>
-                          <p className="text-sm text-gray-600 mb-1">{classItem.instructor}</p>
-                          <p className="text-sm text-gray-500">{classItem.gradeLevel} • {classItem.subject}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm font-medium text-gray-900">
-                            {classItem.enrolledCount}/{classItem.capacity}
-                          </p>
-                          <div className="w-16 h-2 bg-gray-200 rounded-full mt-1">
-                            <div 
-                              className={cn(
-                                "h-full rounded-full transition-all duration-300",
-                                getCapacityColor(classItem.enrolledCount, classItem.capacity)
-                              )}
-                              style={{ 
-                                width: `${Math.min((classItem.enrolledCount / classItem.capacity) * 100, 100)}%` 
-                              }}
-                            />
-                          </div>
+<h3 className="font-medium text-gray-900">{classItem.courseName_c}</h3>
+                             <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                               {classItem.courseCode_c}
+                             </span>
+                           </div>
+                           <p className="text-sm text-gray-600 mb-1">{classItem.instructor_c}</p>
+                           <p className="text-sm text-gray-500">{classItem.gradeLevel_c} • {classItem.subject_c}</p>
+                         </div>
+                         <div className="text-right">
+                           <p className="text-sm font-medium text-gray-900">
+                             {classItem.enrolledCount_c}/{classItem.capacity_c}
+                           </p>
+                           <div className="w-16 h-2 bg-gray-200 rounded-full mt-1">
+                             <div 
+                               className={cn(
+                                 "h-full rounded-full transition-all duration-300",
+                                 getCapacityColor(classItem.enrolledCount_c, classItem.capacity_c)
+                               )}
+                               style={{ 
+                                 width: `${Math.min((classItem.enrolledCount_c / classItem.capacity_c) * 100, 100)}%` 
+                               }}
+                             />
+                           </div>
                         </div>
                       </div>
                     </motion.div>
@@ -255,61 +256,61 @@ const ClassesPage = ({ onMobileMenuToggle, onClassCountChange }) => {
                 <div className="p-6 border-b border-gray-200">
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <h2 className="text-xl font-semibold text-gray-900 mb-1">
-                        {selectedClass.courseName}
-                      </h2>
-                      <p className="text-sm text-gray-500">{selectedClass.courseCode}</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
-                        <ApperIcon name="Edit2" size={16} />
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        <ApperIcon name="MoreVertical" size={16} />
-                      </Button>
-                    </div>
-                  </div>
+<h2 className="text-xl font-semibold text-gray-900 mb-1">
+                         {selectedClass.courseName_c}
+                       </h2>
+                       <p className="text-sm text-gray-500">{selectedClass.courseCode_c}</p>
+                     </div>
+                     <div className="flex gap-2">
+                       <Button variant="outline" size="sm">
+                         <ApperIcon name="Edit2" size={16} />
+                       </Button>
+                       <Button variant="outline" size="sm">
+                         <ApperIcon name="MoreVertical" size={16} />
+                       </Button>
+                     </div>
+                   </div>
 
-                  {/* Class Info Grid */}
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div>
-                      <p className="text-sm text-gray-500">Instructor</p>
-                      <p className="font-medium text-gray-900">{selectedClass.instructor}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Grade Level</p>
-                      <p className="font-medium text-gray-900">{selectedClass.gradeLevel}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Room</p>
-                      <p className="font-medium text-gray-900">{selectedClass.room}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Schedule</p>
-                      <p className="font-medium text-gray-900">{selectedClass.schedule}</p>
-                    </div>
-                  </div>
+                   {/* Class Info Grid */}
+                   <div className="grid grid-cols-2 gap-4 mb-6">
+                     <div>
+                       <p className="text-sm text-gray-500">Instructor</p>
+                       <p className="font-medium text-gray-900">{selectedClass.instructor_c}</p>
+                     </div>
+                     <div>
+                       <p className="text-sm text-gray-500">Grade Level</p>
+                       <p className="font-medium text-gray-900">{selectedClass.gradeLevel_c}</p>
+                     </div>
+                     <div>
+                       <p className="text-sm text-gray-500">Room</p>
+                       <p className="font-medium text-gray-900">{selectedClass.room_c}</p>
+                     </div>
+                     <div>
+                       <p className="text-sm text-gray-500">Schedule</p>
+                       <p className="font-medium text-gray-900">{selectedClass.schedule_c}</p>
+                     </div>
+                   </div>
 
-                  {/* Capacity Indicator */}
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-700">Class Capacity</span>
-                      <span className="text-sm text-gray-500">
-                        {selectedClass.enrolledCount} / {selectedClass.capacity} students
-                      </span>
-                    </div>
-                    <div className="w-full h-3 bg-gray-200 rounded-full">
-                      <div 
-                        className={cn(
-                          "h-full rounded-full transition-all duration-300",
-                          getCapacityColor(selectedClass.enrolledCount, selectedClass.capacity)
-                        )}
-                        style={{ 
-                          width: `${Math.min((selectedClass.enrolledCount / selectedClass.capacity) * 100, 100)}%` 
-                        }}
-                      />
-                    </div>
-                  </div>
+                   {/* Capacity Indicator */}
+                   <div className="bg-gray-50 rounded-lg p-4">
+                     <div className="flex items-center justify-between mb-2">
+                       <span className="text-sm font-medium text-gray-700">Class Capacity</span>
+                       <span className="text-sm text-gray-500">
+                         {selectedClass.enrolledCount_c} / {selectedClass.capacity_c} students
+                       </span>
+                     </div>
+                     <div className="w-full h-3 bg-gray-200 rounded-full">
+                       <div 
+                         className={cn(
+                           "h-full rounded-full transition-all duration-300",
+                           getCapacityColor(selectedClass.enrolledCount_c, selectedClass.capacity_c)
+                         )}
+                         style={{ 
+                           width: `${Math.min((selectedClass.enrolledCount_c / selectedClass.capacity_c) * 100, 100)}%` 
+                         }}
+                       />
+                     </div>
+                   </div>
                 </div>
 
                 {/* Enrolled Students */}

@@ -1,36 +1,15 @@
 class GradeService {
   constructor() {
-    this.storageKey = "scholar-hub-grades";
-    this.initializeData();
+    this.tableName = 'grade_c';
+    this.initializeClient();
   }
 
-  initializeData() {
-    const existingData = localStorage.getItem(this.storageKey);
-    if (!existingData) {
-      const initialGrades = [
-        {
-          Id: 1,
-          studentId: 1,
-          assignmentId: 1,
-          classId: 1,
-          score: 23,
-          percentage: 92,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        },
-        {
-          Id: 2,
-          studentId: 2,
-          assignmentId: 1,
-          classId: 1,
-          score: 20,
-          percentage: 80,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        }
-      ];
-      localStorage.setItem(this.storageKey, JSON.stringify(initialGrades));
-    }
+  initializeClient() {
+    const { ApperClient } = window.ApperSDK;
+    this.apperClient = new ApperClient({
+      apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+      apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+    });
   }
 
   async delay(ms = 200) {
@@ -38,101 +17,398 @@ class GradeService {
   }
 
   async getAll() {
-    await this.delay();
-    const data = localStorage.getItem(this.storageKey);
-    return data ? JSON.parse(data) : [];
+    try {
+      await this.delay();
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "studentId_c" } },
+          { field: { Name: "assignmentId_c" } },
+          { field: { Name: "classId_c" } },
+          { field: { Name: "score_c" } },
+          { field: { Name: "percentage_c" } }
+        ]
+      };
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching grades:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   }
 
   async getById(id) {
-    await this.delay();
-    const grades = await this.getAll();
-    return grades.find(grade => grade.Id === parseInt(id));
+    try {
+      await this.delay();
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "studentId_c" } },
+          { field: { Name: "assignmentId_c" } },
+          { field: { Name: "classId_c" } },
+          { field: { Name: "score_c" } },
+          { field: { Name: "percentage_c" } }
+        ]
+      };
+
+      const response = await this.apperClient.getRecordById(this.tableName, parseInt(id), params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+
+      return response.data;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error(`Error fetching grade with ID ${id}:`, error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
+    }
   }
 
   async getByClass(classId) {
-    await this.delay();
-    const grades = await this.getAll();
-    return grades.filter(grade => grade.classId === parseInt(classId));
+    try {
+      await this.delay();
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "studentId_c" } },
+          { field: { Name: "assignmentId_c" } },
+          { field: { Name: "classId_c" } },
+          { field: { Name: "score_c" } },
+          { field: { Name: "percentage_c" } }
+        ],
+        where: [
+          {
+            FieldName: "classId_c",
+            Operator: "EqualTo",
+            Values: [parseInt(classId)],
+            Include: true
+          }
+        ]
+      };
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching grades by class:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   }
 
   async getByStudent(studentId) {
-    await this.delay();
-    const grades = await this.getAll();
-    return grades.filter(grade => grade.studentId === parseInt(studentId));
+    try {
+      await this.delay();
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "studentId_c" } },
+          { field: { Name: "assignmentId_c" } },
+          { field: { Name: "classId_c" } },
+          { field: { Name: "score_c" } },
+          { field: { Name: "percentage_c" } }
+        ],
+        where: [
+          {
+            FieldName: "studentId_c",
+            Operator: "EqualTo",
+            Values: [parseInt(studentId)],
+            Include: true
+          }
+        ]
+      };
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching grades by student:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   }
 
   async getByAssignment(assignmentId) {
-    await this.delay();
-    const grades = await this.getAll();
-    return grades.filter(grade => grade.assignmentId === parseInt(assignmentId));
+    try {
+      await this.delay();
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "studentId_c" } },
+          { field: { Name: "assignmentId_c" } },
+          { field: { Name: "classId_c" } },
+          { field: { Name: "score_c" } },
+          { field: { Name: "percentage_c" } }
+        ],
+        where: [
+          {
+            FieldName: "assignmentId_c",
+            Operator: "EqualTo",
+            Values: [parseInt(assignmentId)],
+            Include: true
+          }
+        ]
+      };
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching grades by assignment:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   }
 
   async create(gradeData) {
-    await this.delay();
-    const grades = await this.getAll();
-    const maxId = grades.length > 0 ? Math.max(...grades.map(g => g.Id)) : 0;
-    
-    const newGrade = {
-      ...gradeData,
-      Id: maxId + 1,
-      score: parseFloat(gradeData.score),
-      percentage: parseInt(gradeData.percentage),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    
-    grades.push(newGrade);
-    localStorage.setItem(this.storageKey, JSON.stringify(grades));
-    return newGrade;
+    try {
+      await this.delay();
+      
+      // Only include Updateable fields in create operation
+      const params = {
+        records: [{
+          Name: `Grade for Student ${gradeData.studentId || gradeData.studentId_c}`,
+          Tags: gradeData.Tags || "",
+          Owner: gradeData.Owner || "",
+          studentId_c: parseInt(gradeData.studentId || gradeData.studentId_c),
+          assignmentId_c: parseInt(gradeData.assignmentId || gradeData.assignmentId_c),
+          classId_c: parseInt(gradeData.classId || gradeData.classId_c),
+          score_c: parseFloat(gradeData.score || gradeData.score_c),
+          percentage_c: parseInt(gradeData.percentage || gradeData.percentage_c)
+        }]
+      };
+
+      const response = await this.apperClient.createRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create grades ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          
+          failedRecords.forEach(record => {
+            record.errors?.forEach(error => {
+              console.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) console.error(record.message);
+          });
+        }
+        
+        return successfulRecords.length > 0 ? successfulRecords[0].data : null;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating grade:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
+    }
   }
 
   async update(id, gradeData) {
-    await this.delay();
-    const grades = await this.getAll();
-    const index = grades.findIndex(grade => grade.Id === parseInt(id));
-    
-    if (index === -1) {
-      throw new Error("Grade not found");
+    try {
+      await this.delay();
+      
+      // Only include Updateable fields in update operation
+      const params = {
+        records: [{
+          Id: parseInt(id),
+          Name: gradeData.studentId || gradeData.studentId_c ? `Grade for Student ${gradeData.studentId || gradeData.studentId_c}` : undefined,
+          Tags: gradeData.Tags,
+          Owner: gradeData.Owner,
+          studentId_c: gradeData.studentId ? parseInt(gradeData.studentId) : gradeData.studentId_c ? parseInt(gradeData.studentId_c) : undefined,
+          assignmentId_c: gradeData.assignmentId ? parseInt(gradeData.assignmentId) : gradeData.assignmentId_c ? parseInt(gradeData.assignmentId_c) : undefined,
+          classId_c: gradeData.classId ? parseInt(gradeData.classId) : gradeData.classId_c ? parseInt(gradeData.classId_c) : undefined,
+          score_c: gradeData.score !== undefined ? parseFloat(gradeData.score) : gradeData.score_c !== undefined ? parseFloat(gradeData.score_c) : undefined,
+          percentage_c: gradeData.percentage !== undefined ? parseInt(gradeData.percentage) : gradeData.percentage_c !== undefined ? parseInt(gradeData.percentage_c) : undefined
+        }]
+      };
+
+      const response = await this.apperClient.updateRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+        
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update grades ${failedUpdates.length} records:${JSON.stringify(failedUpdates)}`);
+          
+          failedUpdates.forEach(record => {
+            record.errors?.forEach(error => {
+              console.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) console.error(record.message);
+          });
+        }
+        
+        return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating grade:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
     }
-    
-    grades[index] = { 
-      ...grades[index], 
-      ...gradeData,
-      score: parseFloat(gradeData.score),
-      percentage: parseInt(gradeData.percentage),
-      updatedAt: new Date().toISOString()
-    };
-    localStorage.setItem(this.storageKey, JSON.stringify(grades));
-    return grades[index];
   }
 
   async delete(id) {
-    await this.delay();
-    const grades = await this.getAll();
-    const filteredGrades = grades.filter(grade => grade.Id !== parseInt(id));
-    
-    if (filteredGrades.length === grades.length) {
-      throw new Error("Grade not found");
+    try {
+      await this.delay();
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+
+      const response = await this.apperClient.deleteRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return false;
+      }
+
+      if (response.results) {
+        const successfulDeletions = response.results.filter(result => result.success);
+        const failedDeletions = response.results.filter(result => !result.success);
+        
+        if (failedDeletions.length > 0) {
+          console.error(`Failed to delete grades ${failedDeletions.length} records:${JSON.stringify(failedDeletions)}`);
+          
+          failedDeletions.forEach(record => {
+            if (record.message) console.error(record.message);
+          });
+        }
+        
+        return successfulDeletions.length > 0;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting grade:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return false;
     }
-    
-    localStorage.setItem(this.storageKey, JSON.stringify(filteredGrades));
-    return true;
   }
 
   async deleteByAssignment(assignmentId) {
-    await this.delay();
-    const grades = await this.getAll();
-    const filteredGrades = grades.filter(grade => grade.assignmentId !== parseInt(assignmentId));
-    localStorage.setItem(this.storageKey, JSON.stringify(filteredGrades));
-    return true;
+    try {
+      await this.delay();
+      const grades = await this.getByAssignment(assignmentId);
+      if (grades.length === 0) return true;
+      
+      const recordIds = grades.map(grade => grade.Id);
+      const params = {
+        RecordIds: recordIds
+      };
+
+      const response = await this.apperClient.deleteRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting grades by assignment:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return false;
+    }
   }
 
   async deleteByStudent(studentId) {
-    await this.delay();
-    const grades = await this.getAll();
-    const filteredGrades = grades.filter(grade => grade.studentId !== parseInt(studentId));
-    localStorage.setItem(this.storageKey, JSON.stringify(filteredGrades));
-    return true;
+    try {
+      await this.delay();
+      const grades = await this.getByStudent(studentId);
+      if (grades.length === 0) return true;
+      
+      const recordIds = grades.map(grade => grade.Id);
+      const params = {
+        RecordIds: recordIds
+      };
+
+      const response = await this.apperClient.deleteRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting grades by student:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return false;
+    }
   }
 }
 

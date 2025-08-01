@@ -1,16 +1,15 @@
-import classesData from "@/services/mockData/classes.json";
-
 class ClassService {
   constructor() {
-    this.storageKey = "scholar-hub-classes";
-    this.initializeData();
+    this.tableName = 'class_c';
+    this.initializeClient();
   }
 
-  initializeData() {
-    const existingData = localStorage.getItem(this.storageKey);
-    if (!existingData) {
-      localStorage.setItem(this.storageKey, JSON.stringify(classesData));
-    }
+  initializeClient() {
+    const { ApperClient } = window.ApperSDK;
+    this.apperClient = new ApperClient({
+      apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+      apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+    });
   }
 
   async delay(ms = 300) {
@@ -18,101 +17,309 @@ class ClassService {
   }
 
   async getAll() {
-    await this.delay();
-    const data = localStorage.getItem(this.storageKey);
-    return data ? JSON.parse(data) : [];
+    try {
+      await this.delay();
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "courseName_c" } },
+          { field: { Name: "courseCode_c" } },
+          { field: { Name: "instructor_c" } },
+          { field: { Name: "gradeLevel_c" } },
+          { field: { Name: "subject_c" } },
+          { field: { Name: "room_c" } },
+          { field: { Name: "schedule_c" } },
+          { field: { Name: "capacity_c" } },
+          { field: { Name: "enrolledCount_c" } },
+          { field: { Name: "enrolledStudents_c" } },
+          { field: { Name: "description_c" } },
+          { field: { Name: "semester_c" } },
+          { field: { Name: "credits_c" } },
+          { field: { Name: "prerequisites_c" } },
+          { field: { Name: "status_c" } }
+        ]
+      };
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching classes:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   }
 
   async getById(id) {
-    await this.delay();
-    const classes = await this.getAll();
-    return classes.find(classItem => classItem.Id === parseInt(id));
+    try {
+      await this.delay();
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "courseName_c" } },
+          { field: { Name: "courseCode_c" } },
+          { field: { Name: "instructor_c" } },
+          { field: { Name: "gradeLevel_c" } },
+          { field: { Name: "subject_c" } },
+          { field: { Name: "room_c" } },
+          { field: { Name: "schedule_c" } },
+          { field: { Name: "capacity_c" } },
+          { field: { Name: "enrolledCount_c" } },
+          { field: { Name: "enrolledStudents_c" } },
+          { field: { Name: "description_c" } },
+          { field: { Name: "semester_c" } },
+          { field: { Name: "credits_c" } },
+          { field: { Name: "prerequisites_c" } },
+          { field: { Name: "status_c" } }
+        ]
+      };
+
+      const response = await this.apperClient.getRecordById(this.tableName, parseInt(id), params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+
+      return response.data;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error(`Error fetching class with ID ${id}:`, error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
+    }
   }
 
   async create(classData) {
-    await this.delay();
-    const classes = await this.getAll();
-    const maxId = classes.length > 0 ? Math.max(...classes.map(c => c.Id)) : 0;
-    
-    const newClass = {
-      ...classData,
-      Id: maxId + 1,
-      enrolledStudents: classData.enrolledStudents || [],
-      enrolledCount: classData.enrolledStudents?.length || 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    
-    classes.push(newClass);
-    localStorage.setItem(this.storageKey, JSON.stringify(classes));
-    return newClass;
+    try {
+      await this.delay();
+      
+      // Only include Updateable fields in create operation
+      const params = {
+        records: [{
+          Name: classData.courseName_c,
+          Tags: classData.Tags || "",
+          Owner: classData.Owner || "",
+          courseName_c: classData.courseName_c,
+          courseCode_c: classData.courseCode_c,
+          instructor_c: classData.instructor_c,
+          gradeLevel_c: classData.gradeLevel_c,
+          subject_c: classData.subject_c,
+          room_c: classData.room_c || "",
+          schedule_c: classData.schedule_c || "",
+          capacity_c: parseInt(classData.capacity_c) || 0,
+          enrolledCount_c: parseInt(classData.enrolledCount_c) || 0,
+          enrolledStudents_c: classData.enrolledStudents_c || "",
+          description_c: classData.description_c || "",
+          semester_c: classData.semester_c || "",
+          credits_c: parseInt(classData.credits_c) || 0,
+          prerequisites_c: classData.prerequisites_c || "",
+          status_c: classData.status_c || "Active"
+        }]
+      };
+
+      const response = await this.apperClient.createRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create classes ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          
+          failedRecords.forEach(record => {
+            record.errors?.forEach(error => {
+              console.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) console.error(record.message);
+          });
+        }
+        
+        return successfulRecords.length > 0 ? successfulRecords[0].data : null;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating class:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
+    }
   }
 
   async update(id, classData) {
-    await this.delay();
-    const classes = await this.getAll();
-    const index = classes.findIndex(classItem => classItem.Id === parseInt(id));
-    
-    if (index === -1) {
-      throw new Error("Class not found");
+    try {
+      await this.delay();
+      
+      // Only include Updateable fields in update operation
+      const params = {
+        records: [{
+          Id: parseInt(id),
+          Name: classData.courseName_c,
+          Tags: classData.Tags,
+          Owner: classData.Owner,
+          courseName_c: classData.courseName_c,
+          courseCode_c: classData.courseCode_c,
+          instructor_c: classData.instructor_c,
+          gradeLevel_c: classData.gradeLevel_c,
+          subject_c: classData.subject_c,
+          room_c: classData.room_c,
+          schedule_c: classData.schedule_c,
+          capacity_c: classData.capacity_c ? parseInt(classData.capacity_c) : undefined,
+          enrolledCount_c: classData.enrolledCount_c ? parseInt(classData.enrolledCount_c) : undefined,
+          enrolledStudents_c: classData.enrolledStudents_c,
+          description_c: classData.description_c,
+          semester_c: classData.semester_c,
+          credits_c: classData.credits_c ? parseInt(classData.credits_c) : undefined,
+          prerequisites_c: classData.prerequisites_c,
+          status_c: classData.status_c
+        }]
+      };
+
+      const response = await this.apperClient.updateRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+        
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update classes ${failedUpdates.length} records:${JSON.stringify(failedUpdates)}`);
+          
+          failedUpdates.forEach(record => {
+            record.errors?.forEach(error => {
+              console.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) console.error(record.message);
+          });
+        }
+        
+        return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating class:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
     }
-    
-    classes[index] = { 
-      ...classes[index], 
-      ...classData,
-      enrolledCount: classData.enrolledStudents?.length || classes[index].enrolledCount,
-      updatedAt: new Date().toISOString()
-    };
-    localStorage.setItem(this.storageKey, JSON.stringify(classes));
-    return classes[index];
   }
 
   async delete(id) {
-    await this.delay();
-    const classes = await this.getAll();
-    const filteredClasses = classes.filter(classItem => classItem.Id !== parseInt(id));
-    
-    if (filteredClasses.length === classes.length) {
-      throw new Error("Class not found");
+    try {
+      await this.delay();
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+
+      const response = await this.apperClient.deleteRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return false;
+      }
+
+      if (response.results) {
+        const successfulDeletions = response.results.filter(result => result.success);
+        const failedDeletions = response.results.filter(result => !result.success);
+        
+        if (failedDeletions.length > 0) {
+          console.error(`Failed to delete classes ${failedDeletions.length} records:${JSON.stringify(failedDeletions)}`);
+          
+          failedDeletions.forEach(record => {
+            if (record.message) console.error(record.message);
+          });
+        }
+        
+        return successfulDeletions.length > 0;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting class:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return false;
     }
-    
-    localStorage.setItem(this.storageKey, JSON.stringify(filteredClasses));
-    return true;
   }
 
   async enrollStudent(classId, studentId) {
-    await this.delay();
-    const classItem = await this.getById(classId);
-    if (!classItem) {
-      throw new Error("Class not found");
+    try {
+      await this.delay();
+      const classItem = await this.getById(classId);
+      if (!classItem) {
+        throw new Error("Class not found");
+      }
+      
+      const currentStudents = classItem.enrolledStudents_c ? classItem.enrolledStudents_c.split(',').map(id => id.trim()) : [];
+      
+      if (currentStudents.includes(studentId.toString())) {
+        throw new Error("Student already enrolled");
+      }
+      
+      if (currentStudents.length >= classItem.capacity_c) {
+        throw new Error("Class is at full capacity");
+      }
+      
+      currentStudents.push(studentId.toString());
+      
+      return await this.update(classId, {
+        enrolledStudents_c: currentStudents.join(','),
+        enrolledCount_c: currentStudents.length
+      });
+    } catch (error) {
+      throw error;
     }
-    
-    if (classItem.enrolledStudents.includes(parseInt(studentId))) {
-      throw new Error("Student already enrolled");
-    }
-    
-    if (classItem.enrolledStudents.length >= classItem.capacity) {
-      throw new Error("Class is at full capacity");
-    }
-    
-    classItem.enrolledStudents.push(parseInt(studentId));
-    return await this.update(classId, classItem);
   }
 
   async unenrollStudent(classId, studentId) {
-    await this.delay();
-    const classItem = await this.getById(classId);
-    if (!classItem) {
-      throw new Error("Class not found");
+    try {
+      await this.delay();
+      const classItem = await this.getById(classId);
+      if (!classItem) {
+        throw new Error("Class not found");
+      }
+      
+      const currentStudents = classItem.enrolledStudents_c ? classItem.enrolledStudents_c.split(',').map(id => id.trim()) : [];
+      const studentIndex = currentStudents.indexOf(studentId.toString());
+      
+      if (studentIndex === -1) {
+        throw new Error("Student not enrolled in this class");
+      }
+      
+      currentStudents.splice(studentIndex, 1);
+      
+      return await this.update(classId, {
+        enrolledStudents_c: currentStudents.join(','),
+        enrolledCount_c: currentStudents.length
+      });
+    } catch (error) {
+      throw error;
     }
-    
-    const studentIndex = classItem.enrolledStudents.indexOf(parseInt(studentId));
-    if (studentIndex === -1) {
-      throw new Error("Student not enrolled in this class");
-    }
-    
-    classItem.enrolledStudents.splice(studentIndex, 1);
-    return await this.update(classId, classItem);
   }
 }
 

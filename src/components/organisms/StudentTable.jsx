@@ -118,33 +118,33 @@ const StudentTable = ({ students, onEditStudent, onDeleteStudent }) => {
                   onClick={() => toggleRow(student.Id)}
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10">
-                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center">
-                          <span className="text-sm font-medium text-white">
-                            {student.firstName.charAt(0)}{student.lastName.charAt(0)}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {student.firstName} {student.lastName}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {student.email}
-                        </div>
+<div className="flex items-center">
+                       <div className="flex-shrink-0 h-10 w-10">
+                         <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center">
+                           <span className="text-sm font-medium text-white">
+                             {student.firstName_c?.charAt(0)}{student.lastName_c?.charAt(0)}
+                           </span>
+                         </div>
+                       </div>
+                       <div className="ml-4">
+                         <div className="text-sm font-medium text-gray-900">
+                           {student.firstName_c} {student.lastName_c}
+                         </div>
+                         <div className="text-sm text-gray-500">
+                           {student.email_c}
+                         </div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {student.studentId}
+<td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                     {student.studentId_c}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    Grade {student.gradeLevel}
-                  </td>
+Grade {student.gradeLevel_c}
+                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {getStatusBadge(student.enrollmentStatus)}
-                  </td>
+{getStatusBadge(student.enrollmentStatus_c)}
+                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex items-center space-x-2">
                       <Button
@@ -188,28 +188,28 @@ const StudentTable = ({ students, onEditStudent, onDeleteStudent }) => {
                           className="bg-blue-50 border-t border-blue-100"
                         >
                           <div className="px-6 py-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                              <div>
-                                <h4 className="text-sm font-medium text-gray-900 mb-2">Contact Information</h4>
-                                <div className="space-y-1 text-sm text-gray-600">
-                                  <p><strong>Phone:</strong> {student.phone}</p>
-                                  <p><strong>Address:</strong> {student.address}</p>
-                                </div>
-                              </div>
-                              <div>
-                                <h4 className="text-sm font-medium text-gray-900 mb-2">Guardian Information</h4>
-                                <div className="space-y-1 text-sm text-gray-600">
-                                  <p><strong>Guardian:</strong> {student.guardianName}</p>
-                                  <p><strong>Guardian Phone:</strong> {student.guardianPhone}</p>
-                                </div>
-                              </div>
-                              <div>
-                                <h4 className="text-sm font-medium text-gray-900 mb-2">Enrollment Details</h4>
-                                <div className="space-y-1 text-sm text-gray-600">
-                                  <p><strong>Enrollment Date:</strong> {new Date(student.enrollmentDate).toLocaleDateString()}</p>
-                                  <p><strong>Notes:</strong> {student.notes || "No notes available"}</p>
-                                </div>
-                              </div>
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                               <div>
+                                 <h4 className="text-sm font-medium text-gray-900 mb-2">Contact Information</h4>
+                                 <div className="space-y-1 text-sm text-gray-600">
+                                   <p><strong>Phone:</strong> {student.phone_c}</p>
+                                   <p><strong>Address:</strong> {student.address_c}</p>
+                                 </div>
+                               </div>
+                               <div>
+                                 <h4 className="text-sm font-medium text-gray-900 mb-2">Guardian Information</h4>
+                                 <div className="space-y-1 text-sm text-gray-600">
+                                   <p><strong>Guardian:</strong> {student.guardianName_c}</p>
+                                   <p><strong>Guardian Phone:</strong> {student.guardianPhone_c}</p>
+                                 </div>
+                               </div>
+                               <div>
+                                 <h4 className="text-sm font-medium text-gray-900 mb-2">Enrollment Details</h4>
+                                 <div className="space-y-1 text-sm text-gray-600">
+                                   <p><strong>Enrollment Date:</strong> {new Date(student.enrollmentDate_c).toLocaleDateString()}</p>
+                                   <p><strong>Notes:</strong> {student.notes_c || "No notes available"}</p>
+                                 </div>
+                               </div>
                             </div>
                           </div>
                         </motion.div>

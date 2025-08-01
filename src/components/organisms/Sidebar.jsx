@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import ApperIcon from "@/components/ApperIcon";
 import { cn } from "@/utils/cn";
@@ -14,7 +14,7 @@ const Sidebar = ({ isOpen, onClose, classCount = 0 }) => {
   ];
 
   // Desktop Sidebar
-  const DesktopSidebar = () => (
+const DesktopSidebar = () => (
     <div className="hidden lg:block w-64 bg-gradient-to-b from-primary-900 to-primary-800 border-r border-primary-700">
       <div className="flex items-center px-6 py-4 border-b border-primary-700">
         <div className="flex items-center">
@@ -54,9 +54,30 @@ const Sidebar = ({ isOpen, onClose, classCount = 0 }) => {
             </li>
           ))}
         </ul>
+        
+        <div className="mt-8 pt-4 border-t border-primary-700">
+          <LogoutButton />
+        </div>
       </nav>
     </div>
   );
+
+// LogoutButton component
+  const LogoutButton = () => {
+    const { logout } = React.useContext(React.createContext(null)) || {};
+    
+    if (!logout) return null;
+    
+    return (
+      <button
+        onClick={logout}
+        className="flex items-center w-full px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 text-primary-100 hover:bg-primary-800 hover:text-white"
+      >
+        <ApperIcon name="LogOut" className="h-5 w-5 mr-3" />
+        Logout
+      </button>
+    );
+  };
 
   // Mobile Sidebar
   const MobileSidebar = () => (
@@ -68,7 +89,7 @@ const Sidebar = ({ isOpen, onClose, classCount = 0 }) => {
           onClick={onClose}
         />
       )}
-      
+
       {/* Mobile Sidebar */}
       <div className={cn(
         "lg:hidden fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-primary-900 to-primary-800 transform transition-transform duration-300 ease-in-out",
@@ -119,6 +140,10 @@ const Sidebar = ({ isOpen, onClose, classCount = 0 }) => {
               </li>
             ))}
           </ul>
+          
+          <div className="mt-8 pt-4 border-t border-primary-700">
+            <LogoutButton />
+          </div>
         </nav>
       </div>
     </>

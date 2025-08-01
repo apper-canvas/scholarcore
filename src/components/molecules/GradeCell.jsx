@@ -104,20 +104,20 @@ const GradeCell = ({ grade, assignment, onGradeChange }) => {
       )}
       onClick={handleCellClick}
     >
-      {grade ? (
-        <>
-          <div className="text-sm font-medium">
-            {grade.score}/{assignment.pointsPossible}
-          </div>
-          <div className="text-xs font-medium">
-            {grade.percentage}%
-          </div>
-        </>
-      ) : (
-        <div className="text-xs text-gray-400 font-medium">
-          Click to grade
-        </div>
-      )}
+{grade ? (
+         <>
+           <div className="text-sm font-medium">
+             {grade.score_c}/{assignment.pointsPossible_c}
+           </div>
+           <div className="text-xs font-medium">
+             {grade.percentage_c}%
+           </div>
+         </>
+       ) : (
+         <div className="text-xs text-gray-400 font-medium">
+           Click to grade
+         </div>
+       )}
     </motion.div>
   );
 };

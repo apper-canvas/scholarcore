@@ -1,14 +1,15 @@
 class AttendanceService {
   constructor() {
-    this.storageKey = "scholar-hub-attendance";
-    this.initializeData();
+    this.tableName = 'attendance_c';
+    this.initializeClient();
   }
 
-  initializeData() {
-    const existingData = localStorage.getItem(this.storageKey);
-    if (!existingData) {
-      localStorage.setItem(this.storageKey, JSON.stringify([]));
-    }
+  initializeClient() {
+    const { ApperClient } = window.ApperSDK;
+    this.apperClient = new ApperClient({
+      apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+      apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+    });
   }
 
   async delay(ms = 300) {
@@ -16,135 +17,486 @@ class AttendanceService {
   }
 
   async getAll() {
-    await this.delay();
-    const data = localStorage.getItem(this.storageKey);
-    return data ? JSON.parse(data) : [];
+    try {
+      await this.delay();
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "studentId_c" } },
+          { field: { Name: "classId_c" } },
+          { field: { Name: "date_c" } },
+          { field: { Name: "status_c" } },
+          { field: { Name: "timestamp_c" } }
+        ]
+      };
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching attendance records:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   }
 
   async getById(id) {
-    await this.delay();
-    const attendanceRecords = await this.getAll();
-    return attendanceRecords.find(record => record.Id === parseInt(id));
+    try {
+      await this.delay();
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "studentId_c" } },
+          { field: { Name: "classId_c" } },
+          { field: { Name: "date_c" } },
+          { field: { Name: "status_c" } },
+          { field: { Name: "timestamp_c" } }
+        ]
+      };
+
+      const response = await this.apperClient.getRecordById(this.tableName, parseInt(id), params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+
+      return response.data;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error(`Error fetching attendance record with ID ${id}:`, error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
+    }
   }
 
   async getAttendanceByDate(date) {
-    await this.delay();
-    const attendanceRecords = await this.getAll();
-    return attendanceRecords.filter(record => record.date === date);
+    try {
+      await this.delay();
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "studentId_c" } },
+          { field: { Name: "classId_c" } },
+          { field: { Name: "date_c" } },
+          { field: { Name: "status_c" } },
+          { field: { Name: "timestamp_c" } }
+        ],
+        where: [
+          {
+            FieldName: "date_c",
+            Operator: "EqualTo",
+            Values: [date],
+            Include: true
+          }
+        ]
+      };
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching attendance by date:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   }
 
   async getAttendanceByClass(classId) {
-    await this.delay();
-    const attendanceRecords = await this.getAll();
-    return attendanceRecords.filter(record => record.classId === parseInt(classId));
+    try {
+      await this.delay();
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "studentId_c" } },
+          { field: { Name: "classId_c" } },
+          { field: { Name: "date_c" } },
+          { field: { Name: "status_c" } },
+          { field: { Name: "timestamp_c" } }
+        ],
+        where: [
+          {
+            FieldName: "classId_c",
+            Operator: "EqualTo",
+            Values: [parseInt(classId)],
+            Include: true
+          }
+        ]
+      };
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching attendance by class:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   }
 
   async getAttendanceByDateAndClass(date, classId) {
-    await this.delay();
-    const attendanceRecords = await this.getAll();
-    return attendanceRecords.filter(record => 
-      record.date === date && record.classId === parseInt(classId)
-    );
+    try {
+      await this.delay();
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "studentId_c" } },
+          { field: { Name: "classId_c" } },
+          { field: { Name: "date_c" } },
+          { field: { Name: "status_c" } },
+          { field: { Name: "timestamp_c" } }
+        ],
+        where: [
+          {
+            FieldName: "date_c",
+            Operator: "EqualTo",
+            Values: [date],
+            Include: true
+          },
+          {
+            FieldName: "classId_c",
+            Operator: "EqualTo",
+            Values: [parseInt(classId)],
+            Include: true
+          }
+        ]
+      };
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching attendance by date and class:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   }
 
   async getAttendanceByStudent(studentId) {
-    await this.delay();
-    const attendanceRecords = await this.getAll();
-    return attendanceRecords.filter(record => record.studentId === parseInt(studentId));
+    try {
+      await this.delay();
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "studentId_c" } },
+          { field: { Name: "classId_c" } },
+          { field: { Name: "date_c" } },
+          { field: { Name: "status_c" } },
+          { field: { Name: "timestamp_c" } }
+        ],
+        where: [
+          {
+            FieldName: "studentId_c",
+            Operator: "EqualTo",
+            Values: [parseInt(studentId)],
+            Include: true
+          }
+        ]
+      };
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching attendance by student:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   }
 
   async saveAttendance(attendanceRecords) {
-    await this.delay();
-    
-    if (!Array.isArray(attendanceRecords)) {
-      throw new Error("Attendance records must be an array");
+    try {
+      await this.delay();
+      
+      if (!Array.isArray(attendanceRecords)) {
+        throw new Error("Attendance records must be an array");
+      }
+
+      if (attendanceRecords.length === 0) {
+        throw new Error("No attendance records provided");
+      }
+
+      // First, delete existing records for the same date and class
+      const firstRecord = attendanceRecords[0];
+      await this.deleteByDateAndClass(firstRecord.date || firstRecord.date_c, firstRecord.classId || firstRecord.classId_c);
+
+      // Create new records
+      const recordsToCreate = attendanceRecords.map(record => ({
+        Name: `Attendance for Student ${record.studentId || record.studentId_c}`,
+        Tags: record.Tags || "",
+        Owner: record.Owner || "",
+        studentId_c: parseInt(record.studentId || record.studentId_c),
+        classId_c: parseInt(record.classId || record.classId_c),
+        date_c: record.date || record.date_c,
+        status_c: record.status || record.status_c,
+        timestamp_c: record.timestamp || record.timestamp_c || new Date().toISOString()
+      }));
+
+      const params = {
+        records: recordsToCreate
+      };
+
+      const response = await this.apperClient.createRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to save attendance ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          
+          failedRecords.forEach(record => {
+            record.errors?.forEach(error => {
+              console.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) console.error(record.message);
+          });
+        }
+        
+        return successfulRecords.map(result => result.data);
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error saving attendance:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
     }
-
-    const allRecords = await this.getAll();
-    
-    // Remove existing records for the same date and class
-    const firstRecord = attendanceRecords[0];
-    if (!firstRecord) {
-      throw new Error("No attendance records provided");
-    }
-
-    const filteredRecords = allRecords.filter(record => 
-      !(record.date === firstRecord.date && record.classId === firstRecord.classId)
-    );
-
-    // Generate IDs for new records
-    const maxId = allRecords.length > 0 ? Math.max(...allRecords.map(r => r.Id || 0)) : 0;
-    
-    const newRecords = attendanceRecords.map((record, index) => ({
-      ...record,
-      Id: maxId + index + 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }));
-
-    const updatedRecords = [...filteredRecords, ...newRecords];
-    localStorage.setItem(this.storageKey, JSON.stringify(updatedRecords));
-    
-    return newRecords;
   }
 
   async create(attendanceData) {
-    await this.delay();
-    const records = await this.getAll();
-    const maxId = records.length > 0 ? Math.max(...records.map(r => r.Id)) : 0;
-    
-    const newRecord = {
-      ...attendanceData,
-      Id: maxId + 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    
-    records.push(newRecord);
-    localStorage.setItem(this.storageKey, JSON.stringify(records));
-    return newRecord;
+    try {
+      await this.delay();
+      
+      // Only include Updateable fields in create operation
+      const params = {
+        records: [{
+          Name: `Attendance for Student ${attendanceData.studentId || attendanceData.studentId_c}`,
+          Tags: attendanceData.Tags || "",
+          Owner: attendanceData.Owner || "",
+          studentId_c: parseInt(attendanceData.studentId || attendanceData.studentId_c),
+          classId_c: parseInt(attendanceData.classId || attendanceData.classId_c),
+          date_c: attendanceData.date || attendanceData.date_c,
+          status_c: attendanceData.status || attendanceData.status_c,
+          timestamp_c: attendanceData.timestamp || attendanceData.timestamp_c || new Date().toISOString()
+        }]
+      };
+
+      const response = await this.apperClient.createRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create attendance ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          
+          failedRecords.forEach(record => {
+            record.errors?.forEach(error => {
+              console.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) console.error(record.message);
+          });
+        }
+        
+        return successfulRecords.length > 0 ? successfulRecords[0].data : null;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating attendance record:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
+    }
   }
 
   async update(id, attendanceData) {
-    await this.delay();
-    const records = await this.getAll();
-    const index = records.findIndex(record => record.Id === parseInt(id));
-    
-    if (index === -1) {
-      throw new Error("Attendance record not found");
+    try {
+      await this.delay();
+      
+      // Only include Updateable fields in update operation
+      const params = {
+        records: [{
+          Id: parseInt(id),
+          Name: attendanceData.studentId || attendanceData.studentId_c ? `Attendance for Student ${attendanceData.studentId || attendanceData.studentId_c}` : undefined,
+          Tags: attendanceData.Tags,
+          Owner: attendanceData.Owner,
+          studentId_c: attendanceData.studentId ? parseInt(attendanceData.studentId) : attendanceData.studentId_c ? parseInt(attendanceData.studentId_c) : undefined,
+          classId_c: attendanceData.classId ? parseInt(attendanceData.classId) : attendanceData.classId_c ? parseInt(attendanceData.classId_c) : undefined,
+          date_c: attendanceData.date || attendanceData.date_c,
+          status_c: attendanceData.status || attendanceData.status_c,
+          timestamp_c: attendanceData.timestamp || attendanceData.timestamp_c
+        }]
+      };
+
+      const response = await this.apperClient.updateRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+        
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update attendance ${failedUpdates.length} records:${JSON.stringify(failedUpdates)}`);
+          
+          failedUpdates.forEach(record => {
+            record.errors?.forEach(error => {
+              console.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) console.error(record.message);
+          });
+        }
+        
+        return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating attendance record:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
     }
-    
-    records[index] = { 
-      ...records[index], 
-      ...attendanceData,
-      updatedAt: new Date().toISOString()
-    };
-    localStorage.setItem(this.storageKey, JSON.stringify(records));
-    return records[index];
   }
 
   async delete(id) {
-    await this.delay();
-    const records = await this.getAll();
-    const filteredRecords = records.filter(record => record.Id !== parseInt(id));
-    
-    if (filteredRecords.length === records.length) {
-      throw new Error("Attendance record not found");
+    try {
+      await this.delay();
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+
+      const response = await this.apperClient.deleteRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return false;
+      }
+
+      if (response.results) {
+        const successfulDeletions = response.results.filter(result => result.success);
+        const failedDeletions = response.results.filter(result => !result.success);
+        
+        if (failedDeletions.length > 0) {
+          console.error(`Failed to delete attendance ${failedDeletions.length} records:${JSON.stringify(failedDeletions)}`);
+          
+          failedDeletions.forEach(record => {
+            if (record.message) console.error(record.message);
+          });
+        }
+        
+        return successfulDeletions.length > 0;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting attendance record:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return false;
     }
-    
-    localStorage.setItem(this.storageKey, JSON.stringify(filteredRecords));
-    return true;
   }
 
   async deleteByDateAndClass(date, classId) {
-    await this.delay();
-    const records = await this.getAll();
-    const filteredRecords = records.filter(record => 
-      !(record.date === date && record.classId === parseInt(classId))
-    );
-    
-    localStorage.setItem(this.storageKey, JSON.stringify(filteredRecords));
-    return true;
+    try {
+      await this.delay();
+      const existingRecords = await this.getAttendanceByDateAndClass(date, classId);
+      
+      if (existingRecords.length === 0) {
+        return true;
+      }
+
+      const recordIds = existingRecords.map(record => record.Id);
+      const params = {
+        RecordIds: recordIds
+      };
+
+      const response = await this.apperClient.deleteRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting attendance by date and class:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return false;
+    }
   }
 }
 

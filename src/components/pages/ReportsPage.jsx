@@ -22,7 +22,7 @@ function ReportsPage({ onMobileMenuToggle }) {
     studentsAtRisk: 0
   });
 
-  useEffect(() => {
+useEffect(() => {
     loadAnalytics();
   }, []);
 
@@ -38,14 +38,14 @@ function ReportsPage({ onMobileMenuToggle }) {
       ]);
 
       // Calculate total enrolled students
-      const activeStudents = students.filter(s => s.enrollmentStatus === 'Active');
+      const activeStudents = students.filter(s => s.enrollmentStatus_c === 'Active');
       const totalStudents = activeStudents.length;
       
       // Mock previous semester comparison (would come from historical data)
       const previousSemesterStudents = Math.floor(totalStudents * 0.92); // 8% growth simulation
       
       // Calculate average attendance
-      const attendanceRecords = attendance.filter(a => a.status === 'Present');
+      const attendanceRecords = attendance.filter(a => a.status_c === 'Present');
       const totalAttendanceRecords = attendance.length;
       const averageAttendance = totalAttendanceRecords > 0 
         ? Math.round((attendanceRecords.length / totalAttendanceRecords) * 100)
@@ -54,27 +54,30 @@ function ReportsPage({ onMobileMenuToggle }) {
       // Mock attendance trend (would compare with previous periods)
       const attendanceTrend = 2.3; // 2.3% improvement simulation
 
-      // Calculate grade distribution
+      // Calculate grade distribution based on percentage
       const gradeDistribution = { A: 0, B: 0, C: 0, D: 0, F: 0 };
       grades.forEach(grade => {
-        if (grade.letterGrade && gradeDistribution.hasOwnProperty(grade.letterGrade)) {
-          gradeDistribution[grade.letterGrade]++;
-        }
+        const percentage = grade.percentage_c;
+        if (percentage >= 90) gradeDistribution.A++;
+        else if (percentage >= 80) gradeDistribution.B++;
+        else if (percentage >= 70) gradeDistribution.C++;
+        else if (percentage >= 60) gradeDistribution.D++;
+        else gradeDistribution.F++;
       });
 
       // Calculate students at risk (failing grades or poor attendance)
-      const failingGrades = grades.filter(g => g.letterGrade === 'F' || g.letterGrade === 'D');
-      const failingStudentIds = [...new Set(failingGrades.map(g => g.studentId))];
+      const failingGrades = grades.filter(g => g.percentage_c < 70);
+      const failingStudentIds = [...new Set(failingGrades.map(g => g.studentId_c))];
       
       // Students with poor attendance (less than 75%)
       const attendanceByStudent = {};
       attendance.forEach(record => {
-        if (!attendanceByStudent[record.studentId]) {
-          attendanceByStudent[record.studentId] = { present: 0, total: 0 };
+        if (!attendanceByStudent[record.studentId_c]) {
+          attendanceByStudent[record.studentId_c] = { present: 0, total: 0 };
         }
-        attendanceByStudent[record.studentId].total++;
-        if (record.status === 'Present') {
-          attendanceByStudent[record.studentId].present++;
+        attendanceByStudent[record.studentId_c].total++;
+        if (record.status_c === 'Present') {
+          attendanceByStudent[record.studentId_c].present++;
         }
       });
 
@@ -117,7 +120,6 @@ function ReportsPage({ onMobileMenuToggle }) {
       : 0;
     return { growth, percentage };
   };
-
   if (loading) return <Loading />;
   if (error) return <Error message={error} onRetry={loadAnalytics} />;
 

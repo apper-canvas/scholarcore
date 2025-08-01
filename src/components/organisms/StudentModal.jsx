@@ -31,24 +31,24 @@ const [formData, setFormData] = useState({
 useEffect(() => {
     if (student) {
       setFormData({
-        firstName: student.firstName || "",
-        lastName: student.lastName || "",
-        dateOfBirth: student.dateOfBirth || "",
-        studentId: student.studentId || "",
-        email: student.email || "",
-        phone: student.phone || "",
-        gradeLevel: student.gradeLevel?.toString() || "",
-        enrollmentStatus: student.enrollmentStatus || "Active",
-        enrollmentDate: student.enrollmentDate || new Date().toISOString().split("T")[0],
-        guardianName: student.guardianName || "",
-        guardianRelationship: student.guardianRelationship || "Parent",
-        guardianPhone: student.guardianPhone || "",
-        guardianEmail: student.guardianEmail || "",
-        streetAddress: student.streetAddress || "",
-        city: student.city || "",
-        state: student.state || "",
-        zipCode: student.zipCode || "",
-        notes: student.notes || ""
+        firstName: student.firstName_c || "",
+        lastName: student.lastName_c || "",
+        dateOfBirth: student.dateOfBirth_c || "",
+        studentId: student.studentId_c || "",
+        email: student.email_c || "",
+        phone: student.phone_c || "",
+        gradeLevel: student.gradeLevel_c?.toString() || "",
+        enrollmentStatus: student.enrollmentStatus_c || "Active",
+        enrollmentDate: student.enrollmentDate_c || new Date().toISOString().split("T")[0],
+        guardianName: student.guardianName_c || "",
+        guardianRelationship: student.guardianRelationship_c || "Parent",
+        guardianPhone: student.guardianPhone_c || "",
+        guardianEmail: student.guardianEmail_c || "",
+        streetAddress: student.streetAddress_c || "",
+        city: student.city_c || "",
+        state: student.state_c || "",
+        zipCode: student.zipCode_c || "",
+        notes: student.notes_c || ""
       });
     } else {
       setFormData({
@@ -122,9 +122,25 @@ const validateForm = () => {
       return;
     }
 
-    const studentData = {
-      ...formData,
-      gradeLevel: parseInt(formData.gradeLevel),
+const studentData = {
+      firstName_c: formData.firstName,
+      lastName_c: formData.lastName,
+      dateOfBirth_c: formData.dateOfBirth,
+      studentId_c: formData.studentId,
+      email_c: formData.email,
+      phone_c: formData.phone,
+      gradeLevel_c: parseInt(formData.gradeLevel),
+      enrollmentStatus_c: formData.enrollmentStatus,
+      enrollmentDate_c: formData.enrollmentDate,
+      guardianName_c: formData.guardianName,
+      guardianRelationship_c: formData.guardianRelationship,
+      guardianPhone_c: formData.guardianPhone,
+      guardianEmail_c: formData.guardianEmail,
+      streetAddress_c: formData.streetAddress,
+      city_c: formData.city,
+      state_c: formData.state,
+      zipCode_c: formData.zipCode,
+      notes_c: formData.notes,
       Id: student?.Id
     };
 

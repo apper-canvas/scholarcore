@@ -12,7 +12,6 @@ import ResetPassword from "@/components/pages/ResetPassword";
 import PromptPassword from "@/components/pages/PromptPassword";
 import Sidebar from "@/components/organisms/Sidebar";
 import ReportsPage from "@/components/pages/ReportsPage";
-import ReportsPage from "@/components/pages/ReportsPage";
 import AttendancePage from "@/components/pages/AttendancePage";
 import ComingSoonPage from "@/components/pages/ComingSoonPage";
 import GradesPage from "@/components/pages/GradesPage";

@@ -139,9 +139,8 @@ const filteredClasses = classes.filter(classItem => {
     return matchesSearch && matchesGrade && matchesSubject;
   });
 
-  const uniqueGrades = [...new Set(classes.map(c => c.gradeLevel))].sort();
-  const uniqueSubjects = [...new Set(classes.map(c => c.subject))].sort();
-
+  const uniqueGrades = [...new Set(classes.map(c => c.gradeLevel_c))].sort();
+  const uniqueSubjects = [...new Set(classes.map(c => c.subject_c))].sort();
   const getCapacityColor = (enrolled, capacity) => {
     const percentage = (enrolled / capacity) * 100;
     if (percentage >= 90) return "bg-red-500";

@@ -5,6 +5,7 @@ import Sidebar from "@/components/organisms/Sidebar";
 import StudentsPage from "@/components/pages/StudentsPage";
 import ClassesPage from "@/components/pages/ClassesPage";
 import ComingSoonPage from "@/components/pages/ComingSoonPage";
+import AttendancePage from "@/components/pages/AttendancePage";
 
 function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -42,14 +43,8 @@ function App() {
                 onMobileMenuToggle={toggleMobileMenu}
               />
             } />
-            <Route path="/attendance" element={
-              <ComingSoonPage 
-                title="Attendance"
-                subtitle="Monitor student attendance and participation"
-                icon="Calendar"
-                description="Attendance management will streamline the process of tracking student presence, tardiness, and participation in daily activities."
-                onMobileMenuToggle={toggleMobileMenu}
-              />
+<Route path="/attendance" element={
+              <AttendancePage onMobileMenuToggle={toggleMobileMenu} />
             } />
             <Route path="/reports" element={
               <ComingSoonPage 

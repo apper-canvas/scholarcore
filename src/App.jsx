@@ -6,7 +6,7 @@ import StudentsPage from "@/components/pages/StudentsPage";
 import ClassesPage from "@/components/pages/ClassesPage";
 import ComingSoonPage from "@/components/pages/ComingSoonPage";
 import AttendancePage from "@/components/pages/AttendancePage";
-
+import GradesPage from "@/components/pages/GradesPage";
 function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [classCount, setClassCount] = useState(0);
@@ -34,15 +34,9 @@ function App() {
                 onClassCountChange={setClassCount}
               />
             } />
-            <Route path="/grades" element={
-              <ComingSoonPage 
-                title="Grades"
-                subtitle="Track academic performance and assessments"
-                icon="Award"
-                description="Grade tracking system will provide comprehensive tools for recording, analyzing, and reporting student academic performance across all subjects."
-                onMobileMenuToggle={toggleMobileMenu}
-              />
-            } />
+<Route path="/grades" element={
+<GradesPage onMobileMenuToggle={toggleMobileMenu} />
+} />
 <Route path="/attendance" element={
               <AttendancePage onMobileMenuToggle={toggleMobileMenu} />
             } />

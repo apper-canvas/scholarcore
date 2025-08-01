@@ -29,14 +29,20 @@ class StudentService {
     return students.find(student => student.Id === parseInt(id));
   }
 
-  async create(studentData) {
+async create(studentData) {
     await this.delay();
     const students = await this.getAll();
     const maxId = students.length > 0 ? Math.max(...students.map(s => s.Id)) : 0;
     
+    // Generate student ID if not provided
+    const studentId = studentData.studentId || `STU${String(maxId + 1).padStart(4, '0')}`;
+    
     const newStudent = {
       ...studentData,
-      Id: maxId + 1
+      Id: maxId + 1,
+      studentId,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
     
     students.push(newStudent);
@@ -44,7 +50,7 @@ class StudentService {
     return newStudent;
   }
 
-  async update(id, studentData) {
+async update(id, studentData) {
     await this.delay();
     const students = await this.getAll();
     const index = students.findIndex(student => student.Id === parseInt(id));
@@ -53,7 +59,11 @@ class StudentService {
       throw new Error("Student not found");
     }
     
-    students[index] = { ...students[index], ...studentData };
+    students[index] = { 
+      ...students[index], 
+      ...studentData,
+      updatedAt: new Date().toISOString()
+    };
     localStorage.setItem(this.storageKey, JSON.stringify(students));
     return students[index];
   }

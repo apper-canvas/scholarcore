@@ -3,10 +3,10 @@ import { NavLink } from "react-router-dom";
 import ApperIcon from "@/components/ApperIcon";
 import { cn } from "@/utils/cn";
 
-const Sidebar = ({ isOpen, onClose }) => {
+const Sidebar = ({ isOpen, onClose, classCount = 0 }) => {
   const navigation = [
     { name: "Students", href: "/", icon: "Users" },
-    { name: "Classes", href: "/classes", icon: "BookOpen" },
+    { name: "Classes", href: "/classes", icon: "BookOpen", count: classCount },
     { name: "Grades", href: "/grades", icon: "Award" },
     { name: "Attendance", href: "/attendance", icon: "Calendar" },
     { name: "Reports", href: "/reports", icon: "BarChart3" },
@@ -42,9 +42,14 @@ const Sidebar = ({ isOpen, onClose }) => {
                       : "text-primary-100 hover:bg-primary-800 hover:text-white"
                   )
                 }
-              >
+>
                 <ApperIcon name={item.icon} className="h-5 w-5 mr-3" />
                 {item.name}
+                {item.count > 0 && (
+                  <span className="ml-auto bg-primary-500 text-white text-xs px-2 py-1 rounded-full">
+                    {item.count}
+                  </span>
+                )}
               </NavLink>
             </li>
           ))}
@@ -102,9 +107,14 @@ const Sidebar = ({ isOpen, onClose }) => {
                         : "text-primary-100 hover:bg-primary-800 hover:text-white"
                     )
                   }
-                >
+>
                   <ApperIcon name={item.icon} className="h-5 w-5 mr-3" />
                   {item.name}
+                  {item.count > 0 && (
+                    <span className="ml-auto bg-primary-500 text-white text-xs px-2 py-1 rounded-full">
+                      {item.count}
+                    </span>
+                  )}
                 </NavLink>
               </li>
             ))}

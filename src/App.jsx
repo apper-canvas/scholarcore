@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Sidebar from "@/components/organisms/Sidebar";
 import StudentsPage from "@/components/pages/StudentsPage";
+import ClassesPage from "@/components/pages/ClassesPage";
 import ComingSoonPage from "@/components/pages/ComingSoonPage";
 
 function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [classCount, setClassCount] = useState(0);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -15,24 +17,20 @@ function App() {
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
   };
-
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-gray-50 flex">
-        <Sidebar isOpen={isMobileMenuOpen} onClose={closeMobileMenu} />
+<Sidebar isOpen={isMobileMenuOpen} onClose={closeMobileMenu} classCount={classCount} />
         
         <div className="flex-1 flex flex-col min-w-0">
           <Routes>
             <Route path="/" element={
               <StudentsPage onMobileMenuToggle={toggleMobileMenu} />
             } />
-            <Route path="/classes" element={
-              <ComingSoonPage 
-                title="Classes"
-                subtitle="Manage course schedules and assignments"
-                icon="BookOpen"
-                description="Course management functionality will help you organize class schedules, track assignments, and monitor academic progress across all subjects."
+<Route path="/classes" element={
+              <ClassesPage 
                 onMobileMenuToggle={toggleMobileMenu}
+                onClassCountChange={setClassCount}
               />
             } />
             <Route path="/grades" element={

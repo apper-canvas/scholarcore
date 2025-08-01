@@ -13,6 +13,7 @@ import Empty from "@/components/ui/Empty";
 import { classService } from "@/services/api/classService";
 import { studentService } from "@/services/api/studentService";
 import { cn } from "@/utils/cn";
+import ClassModal from "@/components/organisms/ClassModal";
 
 const ClassesPage = ({ onMobileMenuToggle, onClassCountChange }) => {
   const [classes, setClasses] = useState([]);
@@ -21,10 +22,11 @@ const ClassesPage = ({ onMobileMenuToggle, onClassCountChange }) => {
   const [enrolledStudents, setEnrolledStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filterGrade, setFilterGrade] = useState("");
-  const [filterSubject, setFilterSubject] = useState("");
-
+const [searchQuery, setSearchQuery] = useState("");
+const [filterGrade, setFilterGrade] = useState("");
+const [filterSubject, setFilterSubject] = useState("");
+const [showClassModal, setShowClassModal] = useState(false);
+const [modalLoading, setModalLoading] = useState(false);
   useEffect(() => {
     loadClasses();
     loadStudents();
@@ -109,7 +111,24 @@ const loadEnrolledStudents = async (classId) => {
       toast.error(err.message || "Failed to unenroll student");
     }
   };
-
+const handleCreateClass = async (classData) => {
+  try {
+    setModalLoading(true);
+    const newClass = await classService.create(classData);
+    
+    if (newClass) {
+      toast.success("Class created successfully");
+      setShowClassModal(false);
+      loadClasses(); // Refresh the class list
+    } else {
+      toast.error("Failed to create class");
+    }
+  } catch (error) {
+    toast.error(error.message || "Failed to create class");
+  } finally {
+    setModalLoading(false);
+  }
+};
 const filteredClasses = classes.filter(classItem => {
     const matchesSearch = classItem.courseName_c?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          classItem.instructor_c?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -153,7 +172,11 @@ const filteredClasses = classes.filter(classItem => {
                     {filteredClasses.length} of {classes.length} classes
                   </p>
                 </div>
-                <Button size="sm" className="gap-2">
+<Button 
+                  size="sm" 
+                  className="gap-2"
+                  onClick={() => setShowClassModal(true)}
+                >
                   <ApperIcon name="Plus" size={16} />
                   Add Class
                 </Button>
@@ -352,8 +375,15 @@ const filteredClasses = classes.filter(classItem => {
               </div>
             )}
           </div>
-        </div>
+</div>
       </div>
+
+      <ClassModal
+        isOpen={showClassModal}
+        onClose={() => setShowClassModal(false)}
+        onSave={handleCreateClass}
+        loading={modalLoading}
+      />
     </div>
   );
 };

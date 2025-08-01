@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import ReportsPage from "@/components/pages/ReportsPage";
+import "@/index.css";
 import Sidebar from "@/components/organisms/Sidebar";
+import AttendancePage from "@/components/pages/AttendancePage";
+import ComingSoonPage from "@/components/pages/ComingSoonPage";
+import GradesPage from "@/components/pages/GradesPage";
 import StudentsPage from "@/components/pages/StudentsPage";
 import ClassesPage from "@/components/pages/ClassesPage";
-import ComingSoonPage from "@/components/pages/ComingSoonPage";
-import AttendancePage from "@/components/pages/AttendancePage";
-import GradesPage from "@/components/pages/GradesPage";
 function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [classCount, setClassCount] = useState(0);
@@ -15,31 +17,19 @@ function App() {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const closeMobileMenu = () => {
+const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
   };
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-gray-50 flex">
-<Sidebar isOpen={isMobileMenuOpen} onClose={closeMobileMenu} classCount={classCount} />
-        
+        <Sidebar isOpen={isMobileMenuOpen} onClose={closeMobileMenu} classCount={classCount} />
         <div className="flex-1 flex flex-col min-w-0">
           <Routes>
-            <Route path="/" element={
-              <StudentsPage onMobileMenuToggle={toggleMobileMenu} />
-            } />
-<Route path="/classes" element={
-              <ClassesPage 
-                onMobileMenuToggle={toggleMobileMenu}
-                onClassCountChange={setClassCount}
-              />
-            } />
-<Route path="/grades" element={
-<GradesPage onMobileMenuToggle={toggleMobileMenu} />
-} />
-<Route path="/attendance" element={
-              <AttendancePage onMobileMenuToggle={toggleMobileMenu} />
-            } />
+            <Route path="/" element={<StudentsPage onMobileMenuToggle={toggleMobileMenu} />} />
+            <Route path="/classes" element={<ClassesPage onMobileMenuToggle={toggleMobileMenu} onClassCountChange={setClassCount} />} />
+            <Route path="/grades" element={<GradesPage onMobileMenuToggle={toggleMobileMenu} />} />
+<Route path="/attendance" element={<AttendancePage onMobileMenuToggle={toggleMobileMenu} />} />
             <Route path="/reports" element={
               <ComingSoonPage 
                 title="Reports"
@@ -60,8 +50,7 @@ function App() {
             } />
           </Routes>
         </div>
-        
-        <ToastContainer
+<ToastContainer
           position="top-right"
           autoClose={3000}
           hideProgressBar={false}

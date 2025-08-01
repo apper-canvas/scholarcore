@@ -12,6 +12,7 @@ const [formData, setFormData] = useState({
     studentId: "",
     email: "",
     phone: "",
+    gender: "",
     gradeLevel: "",
     enrollmentStatus: "Active",
     enrollmentDate: new Date().toISOString().split("T")[0],
@@ -37,6 +38,7 @@ useEffect(() => {
         studentId: student.studentId_c || "",
         email: student.email_c || "",
         phone: student.phone_c || "",
+        gender: student.gender_c || "",
         gradeLevel: student.gradeLevel_c?.toString() || "",
         enrollmentStatus: student.enrollmentStatus_c || "Active",
         enrollmentDate: student.enrollmentDate_c || new Date().toISOString().split("T")[0],
@@ -51,13 +53,14 @@ useEffect(() => {
         notes: student.notes_c || ""
       });
     } else {
-      setFormData({
+setFormData({
         firstName: "",
         lastName: "",
         dateOfBirth: "",
         studentId: "",
         email: "",
         phone: "",
+        gender: "",
         gradeLevel: "",
         enrollmentStatus: "Active",
         enrollmentDate: new Date().toISOString().split("T")[0],
@@ -129,6 +132,7 @@ const studentData = {
       studentId_c: formData.studentId,
       email_c: formData.email,
       phone_c: formData.phone,
+      gender_c: formData.gender,
       gradeLevel_c: parseInt(formData.gradeLevel),
       enrollmentStatus_c: formData.enrollmentStatus,
       enrollmentDate_c: formData.enrollmentDate,
@@ -179,7 +183,7 @@ return (
                 <ApperIcon name="User" className="h-5 w-5 mr-2 text-primary-600" />
                 Personal Information
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   label="First Name"
                   name="firstName"
@@ -234,6 +238,22 @@ return (
                   value={formData.phone}
                   onChange={handleInputChange}
                   error={errors.phone}
+                />
+
+                <FormField
+                  label="Gender"
+                  type="select"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleInputChange}
+                  error={errors.gender}
+                  options={[
+                    { value: "", label: "Select Gender" },
+                    { value: "Male", label: "Male" },
+                    { value: "Female", label: "Female" },
+                    { value: "Other", label: "Other" },
+                    { value: "Prefer not to say", label: "Prefer not to say" }
+                  ]}
                 />
               </div>
             </div>

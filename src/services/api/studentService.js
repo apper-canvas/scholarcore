@@ -20,7 +20,7 @@ class StudentService {
     try {
       await this.delay();
       const params = {
-        fields: [
+fields: [
           { field: { Name: "Name" } },
           { field: { Name: "Tags" } },
           { field: { Name: "Owner" } },
@@ -32,6 +32,7 @@ class StudentService {
           { field: { Name: "enrollmentDate_c" } },
           { field: { Name: "email_c" } },
           { field: { Name: "phone_c" } },
+          { field: { Name: "gender_c" } },
           { field: { Name: "address_c" } },
           { field: { Name: "guardianName_c" } },
           { field: { Name: "guardianPhone_c" } },
@@ -68,7 +69,7 @@ class StudentService {
     try {
       await this.delay();
       const params = {
-        fields: [
+fields: [
           { field: { Name: "Name" } },
           { field: { Name: "Tags" } },
           { field: { Name: "Owner" } },
@@ -80,6 +81,7 @@ class StudentService {
           { field: { Name: "enrollmentDate_c" } },
           { field: { Name: "email_c" } },
           { field: { Name: "phone_c" } },
+          { field: { Name: "gender_c" } },
           { field: { Name: "address_c" } },
           { field: { Name: "guardianName_c" } },
           { field: { Name: "guardianPhone_c" } },
@@ -166,7 +168,7 @@ class StudentService {
       
       // Only include Updateable fields in create operation
       const params = {
-        records: [{
+records: [{
           Name: `${studentData.firstName_c} ${studentData.lastName_c}`,
           Tags: studentData.Tags || "",
           Owner: studentData.Owner || "",
@@ -178,6 +180,7 @@ class StudentService {
           enrollmentDate_c: studentData.enrollmentDate_c,
           email_c: studentData.email_c,
           phone_c: studentData.phone_c || "",
+          gender_c: studentData.gender_c || "",
           address_c: studentData.address_c || "",
           guardianName_c: studentData.guardianName_c,
           guardianPhone_c: studentData.guardianPhone_c,
@@ -233,7 +236,7 @@ class StudentService {
       // Only include Updateable fields in update operation
       const params = {
         records: [{
-          Id: parseInt(id),
+Id: parseInt(id),
           Name: studentData.firstName_c && studentData.lastName_c ? `${studentData.firstName_c} ${studentData.lastName_c}` : undefined,
           Tags: studentData.Tags,
           Owner: studentData.Owner,
@@ -245,6 +248,7 @@ class StudentService {
           enrollmentDate_c: studentData.enrollmentDate_c,
           email_c: studentData.email_c,
           phone_c: studentData.phone_c,
+          gender_c: studentData.gender_c,
           address_c: studentData.address_c,
           guardianName_c: studentData.guardianName_c,
           guardianPhone_c: studentData.guardianPhone_c,

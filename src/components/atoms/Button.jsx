@@ -5,8 +5,13 @@ const Button = React.forwardRef(({
   className, 
   variant = "primary", 
   size = "default", 
-  children, 
-  ...props 
+  children,
+  loading,
+  disabled,
+  type,
+  onClick,
+  onSubmit,
+  ...buttonProps 
 }, ref) => {
   const baseStyles = "inline-flex items-center justify-center rounded-md font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]";
   
@@ -25,10 +30,14 @@ const Button = React.forwardRef(({
   };
   
   return (
-    <button
+<button
       className={cn(baseStyles, variants[variant], sizes[size], className)}
       ref={ref}
-      {...props}
+      disabled={disabled || loading}
+      type={type}
+      onClick={onClick}
+      onSubmit={onSubmit}
+      {...buttonProps}
     >
       {children}
     </button>

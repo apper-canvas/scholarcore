@@ -55,10 +55,9 @@ const ClassTable = ({ students, onUnenrollStudent }) => {
       
       let aValue = a[sortConfig.key];
       let bValue = b[sortConfig.key];
-      
-      if (sortConfig.key === 'name') {
-        aValue = `${a.firstName} ${a.lastName}`.toLowerCase();
-        bValue = `${b.firstName} ${b.lastName}`.toLowerCase();
+if (sortConfig.key === 'name') {
+        aValue = `${a.firstName_c} ${a.lastName_c}`.toLowerCase();
+        bValue = `${b.firstName_c} ${b.lastName_c}`.toLowerCase();
       }
       
       if (aValue < bValue) return asc ? -1 : 1;
@@ -83,30 +82,30 @@ const ClassTable = ({ students, onUnenrollStudent }) => {
                 </button>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <button
-                  onClick={() => handleSort('studentId')}
+<button
+                  onClick={() => handleSort('studentId_c')}
                   className="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"
                 >
                   Student ID
-                  <SortIcon column="studentId" />
+                  <SortIcon column="studentId_c" />
                 </button>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <button
-                  onClick={() => handleSort('email')}
+<button
+                  onClick={() => handleSort('email_c')}
                   className="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"
                 >
                   Email
-                  <SortIcon column="email" />
+                  <SortIcon column="email_c" />
                 </button>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <button
-                  onClick={() => handleSort('status')}
+<button
+                  onClick={() => handleSort('enrollmentStatus_c')}
                   className="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"
                 >
                   Status
-                  <SortIcon column="status" />
+                  <SortIcon column="enrollmentStatus_c" />
                 </button>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -129,34 +128,34 @@ const ClassTable = ({ students, onUnenrollStudent }) => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="h-10 w-10 flex-shrink-0">
-                          <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center">
+<div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center">
                             <span className="text-sm font-medium text-primary-800">
-                              {student.firstName?.[0]}{student.lastName?.[0]}
+                              {student.firstName_c?.[0]}{student.lastName_c?.[0]}
                             </span>
                           </div>
                         </div>
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">
-                            {student.firstName} {student.lastName}
+                            {student.firstName_c} {student.lastName_c}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {student.grade}
+                            Grade {student.gradeLevel_c}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+<td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900 font-mono">
-                        {student.studentId}
+                        {student.studentId_c}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+<td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {student.email}
+                        {student.email_c}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {getStatusBadge(student.status)}
+<td className="px-6 py-4 whitespace-nowrap">
+                      {getStatusBadge(student.enrollmentStatus_c)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center gap-2">
@@ -197,11 +196,11 @@ const ClassTable = ({ students, onUnenrollStudent }) => {
                             <div>
                               <h4 className="text-sm font-medium text-gray-900 mb-2">Contact Information</h4>
                               <div className="space-y-1">
-                                <p className="text-sm text-gray-600">
-                                  <span className="font-medium">Phone:</span> {student.phone || 'Not provided'}
+<p className="text-sm text-gray-600">
+                                  <span className="font-medium">Phone:</span> {student.phone_c || 'Not provided'}
                                 </p>
                                 <p className="text-sm text-gray-600">
-                                  <span className="font-medium">Address:</span> {student.address || 'Not provided'}
+                                  <span className="font-medium">Address:</span> {student.streetAddress_c || student.city_c || student.state_c || student.zipCode_c ? `${student.streetAddress_c || ''} ${student.city_c || ''} ${student.state_c || ''} ${student.zipCode_c || ''}`.trim() : 'Not provided'}
                                 </p>
                               </div>
                             </div>
@@ -209,21 +208,21 @@ const ClassTable = ({ students, onUnenrollStudent }) => {
                               <h4 className="text-sm font-medium text-gray-900 mb-2">Academic Information</h4>
                               <div className="space-y-1">
                                 <p className="text-sm text-gray-600">
-                                  <span className="font-medium">Date of Birth:</span> {student.dateOfBirth || 'Not provided'}
+                                  <span className="font-medium">Date of Birth:</span> {student.dateOfBirth_c ? new Date(student.dateOfBirth_c).toLocaleDateString() : 'Not provided'}
                                 </p>
                                 <p className="text-sm text-gray-600">
-                                  <span className="font-medium">Enrollment Date:</span> {student.enrollmentDate || 'Not provided'}
+                                  <span className="font-medium">Enrollment Date:</span> {student.enrollmentDate_c ? new Date(student.enrollmentDate_c).toLocaleDateString() : 'Not provided'}
                                 </p>
                               </div>
                             </div>
                             <div>
                               <h4 className="text-sm font-medium text-gray-900 mb-2">Emergency Contact</h4>
                               <div className="space-y-1">
-                                <p className="text-sm text-gray-600">
-                                  <span className="font-medium">Contact:</span> {student.emergencyContact || 'Not provided'}
+<p className="text-sm text-gray-600">
+                                  <span className="font-medium">Contact:</span> {student.guardianName_c || 'Not provided'}
                                 </p>
                                 <p className="text-sm text-gray-600">
-                                  <span className="font-medium">Phone:</span> {student.emergencyPhone || 'Not provided'}
+                                  <span className="font-medium">Phone:</span> {student.guardianPhone_c || 'Not provided'}
                                 </p>
                               </div>
                             </div>

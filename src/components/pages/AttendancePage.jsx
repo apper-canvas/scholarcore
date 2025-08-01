@@ -212,12 +212,12 @@ const handleSaveAttendance = async () => {
         {selectedClass && (
           <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
             <div className="flex items-center justify-between">
-              <div>
+<div>
                 <h3 className="font-semibold text-primary-900">
-                  {selectedClass.courseName} ({selectedClass.courseCode})
+                  {selectedClass.courseName_c} ({selectedClass.courseCode_c})
                 </h3>
                 <p className="text-primary-700 text-sm">
-                  {selectedClass.instructor} • {selectedClass.room} • {format(new Date(selectedDate), 'EEEE, MMMM dd, yyyy')}
+                  {selectedClass.instructor_c} • {selectedClass.room_c} • {format(new Date(selectedDate), 'EEEE, MMMM dd, yyyy')}
                 </p>
               </div>
               <div className="text-right">
@@ -328,8 +328,8 @@ const handleSaveAttendance = async () => {
                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                            {student.studentId_c}
                          </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          Grade {student.gradeLevel}
+<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          Grade {student.gradeLevel_c}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center gap-2">

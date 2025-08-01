@@ -67,40 +67,40 @@ const StudentTable = ({ students, onEditStudent, onDeleteStudent }) => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
             <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 <button 
-                  onClick={() => handleSort("firstName")}
+                  onClick={() => handleSort("firstName_c")}
                   className="flex items-center space-x-1 hover:text-gray-700 transition-colors duration-200"
                 >
                   <span>Name</span>
-                  <SortIcon column="firstName" />
+                  <SortIcon column="firstName_c" />
                 </button>
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 <button 
-                  onClick={() => handleSort("studentId")}
+                  onClick={() => handleSort("studentId_c")}
                   className="flex items-center space-x-1 hover:text-gray-700 transition-colors duration-200"
                 >
                   <span>Student ID</span>
-                  <SortIcon column="studentId" />
+                  <SortIcon column="studentId_c" />
                 </button>
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 <button 
-                  onClick={() => handleSort("gradeLevel")}
+                  onClick={() => handleSort("gradeLevel_c")}
                   className="flex items-center space-x-1 hover:text-gray-700 transition-colors duration-200"
                 >
                   <span>Grade Level</span>
-                  <SortIcon column="gradeLevel" />
+                  <SortIcon column="gradeLevel_c" />
                 </button>
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+<th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 <button 
-                  onClick={() => handleSort("enrollmentStatus")}
+                  onClick={() => handleSort("enrollmentStatus_c")}
                   className="flex items-center space-x-1 hover:text-gray-700 transition-colors duration-200"
                 >
                   <span>Status</span>
-                  <SortIcon column="enrollmentStatus" />
+                  <SortIcon column="enrollmentStatus_c" />
                 </button>
               </th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -187,13 +187,13 @@ Grade {student.gradeLevel_c}
                           transition={{ duration: 0.3 }}
                           className="bg-blue-50 border-t border-blue-100"
                         >
-                          <div className="px-6 py-4">
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<div className="px-6 py-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                <div>
                                  <h4 className="text-sm font-medium text-gray-900 mb-2">Contact Information</h4>
                                  <div className="space-y-1 text-sm text-gray-600">
                                    <p><strong>Phone:</strong> {student.phone_c}</p>
-                                   <p><strong>Address:</strong> {student.address_c}</p>
+                                   <p><strong>Address:</strong> {student.streetAddress_c} {student.city_c && student.state_c ? `${student.city_c}, ${student.state_c}` : student.city_c || student.state_c || ''} {student.zipCode_c}</p>
                                  </div>
                                </div>
                                <div>
@@ -201,12 +201,14 @@ Grade {student.gradeLevel_c}
                                  <div className="space-y-1 text-sm text-gray-600">
                                    <p><strong>Guardian:</strong> {student.guardianName_c}</p>
                                    <p><strong>Guardian Phone:</strong> {student.guardianPhone_c}</p>
+                                   <p><strong>Guardian Email:</strong> {student.guardianEmail_c}</p>
                                  </div>
                                </div>
                                <div>
                                  <h4 className="text-sm font-medium text-gray-900 mb-2">Enrollment Details</h4>
                                  <div className="space-y-1 text-sm text-gray-600">
-                                   <p><strong>Enrollment Date:</strong> {new Date(student.enrollmentDate_c).toLocaleDateString()}</p>
+                                   <p><strong>Enrollment Date:</strong> {student.enrollmentDate_c ? new Date(student.enrollmentDate_c).toLocaleDateString() : 'N/A'}</p>
+                                   <p><strong>Date of Birth:</strong> {student.dateOfBirth_c ? new Date(student.dateOfBirth_c).toLocaleDateString() : 'N/A'}</p>
                                    <p><strong>Notes:</strong> {student.notes_c || "No notes available"}</p>
                                  </div>
                                </div>

@@ -240,21 +240,20 @@ return (
                   error={errors.phone}
                 />
 
-                <FormField
+<FormField
                   label="Gender"
                   type="select"
                   name="gender"
                   value={formData.gender}
                   onChange={handleInputChange}
                   error={errors.gender}
-                  options={[
-                    { value: "", label: "Select Gender" },
-                    { value: "Male", label: "Male" },
-                    { value: "Female", label: "Female" },
-                    { value: "Other", label: "Other" },
-                    { value: "Prefer not to say", label: "Prefer not to say" }
-                  ]}
-                />
+                >
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                  <option value="Prefer not to say">Prefer not to say</option>
+                </FormField>
               </div>
             </div>
 
